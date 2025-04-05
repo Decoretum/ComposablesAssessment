@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "isolatedModules": true,
+    "target": "es2017",
+    "module": "CommonJS",
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}
