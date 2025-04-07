@@ -3,12 +3,15 @@ import { MaybeRef, Ref, ref, watch, watchEffect } from "vue";
 
 
 // userId will be based on queried User
-export function usePublishUser (
+export function usePublishing (
     queriedUser: Ref<Object>, 
     accessToken: Ref<String>, 
-    isPublished: Ref<Boolean>) {
-
+    isPublished: Ref<Boolean>,
+) {
+    // Declare and initialize variables
     const publicFields = ref("");
+
+    // Declare and initialize functions
     const publishUser = async () => {
         let publishedId = queriedUser.value.id;
         const url = `http://localhost:7500/bffs/profiles/${publishedId}:publish`;
@@ -28,21 +31,11 @@ export function usePublishUser (
             if (Object.keys(r).length === 0 || r.name !== 'Unauthorized') isPublished.value = true;
             else isPublished.value = false;
         })
-
     }
-            
-    return { publicFields, publishUser }
-  }
-  
-  export function useUnpublishUser (
-    userId: Ref<Object>, 
-    accessToken: Ref<String>, 
-    unpublishPressed: Ref<Boolean>, 
-    isPublished: Ref<Boolean>) {
 
-    
     const unpublishUser = async () => {
-        const url = `http://localhost:7500/bffs/profiles/${userId.value}:unpublish`;
+        let userId = queriedUser.value.id;
+        const url = `http://localhost:7500/bffs/profiles/${userId}:unpublish`;
         let params = {'Authorization' : `Bearer ${accessToken.value}`};
 
         await fetchData(url, 'POST', undefined, params)
@@ -53,5 +46,8 @@ export function usePublishUser (
         })        
     }
 
-    return { unpublishUser };
-  }
+    return { publishUser, unpublishUser, publicFields }
+
+}
+
+  

@@ -3,7 +3,7 @@ export async function fetchData(url : String, method: String, body? : Object, pa
     const headers = new Headers();
 
     headers.append("Content-Type", "application/json");
-    headers.append("Accept", "*");
+    headers.append("Accept", "localhost:7500");
 
     for (let p in params)
     {
@@ -15,7 +15,7 @@ export async function fetchData(url : String, method: String, body? : Object, pa
         method: method,
         body : JSON.stringify(body)
         })
-        .then((r) => {return r.json()})
-        .catch((e) => {return e});
+        .then((r) => { return r.json() })
+        .catch((e) => { return e });
     
 }

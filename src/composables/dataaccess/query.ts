@@ -2,40 +2,37 @@ import { fetchData } from "@/utils/fetchdata";
 import { Ref, ref, watch } from "vue";
 
 export function useQueryUser (
-    userId : Ref<String>, 
     authenticated : Ref<Boolean>, 
     accessToken : Ref<String>
     ) {
 
+    // Initialize and Declare variables
     const queriedUser = ref(null);
+    const userId = ref("");
     const isPublished = ref(false);
     let params = undefined;
-
-    const queryUser = () => {
+    
+    // Declare and initialize functions
+    const queryUser = async () => {
         const url = `http://localhost:7500/bffs/profiles/${userId.value}`;
         if (authenticated.value === true)
         {
             params = {'Authorization' : `Bearer ${accessToken.value}`};
         }
-        (async () => {
-            let query = await fetchData(url, 'GET', undefined, params);
-            queriedUser.value = query;
-            queriedUser.value.id = userId.value;
-            let queryValue = queriedUser.value;
-            if (queryValue.hasOwnProperty('data'))
+       
+        let query = await fetchData(url, 'GET', undefined, params);
+        queriedUser.value = query;
+        queriedUser.value.id = userId.value;
+        let queryValue = queriedUser.value;
+        if (queryValue.hasOwnProperty('data'))
+        {
+            if (queryValue['data']['personalDetails'].hasOwnProperty('tags'))
             {
-                if (queryValue['data']['personalDetails'].hasOwnProperty('tags'))
+                if (queryValue['data']['personalDetails']['tags'].includes('unpublished'))
                 {
-                    if (queryValue['data']['personalDetails']['tags'].includes('unpublished'))
-                    {
-                        isPublished.value = false;
-                    } 
-                    else
-                    {
-                        isPublished.value = true;
-                    }
+                    isPublished.value = false;
                 } 
-                else 
+                else
                 {
                     isPublished.value = true;
                 }
@@ -44,10 +41,15 @@ export function useQueryUser (
             {
                 isPublished.value = true;
             }
-            console.log(queriedUser)
-        })();
+        } 
+        else 
+        {
+            isPublished.value = true;
+        }
+        console.log(queriedUser)
+       
     }
 
-    return { queriedUser, isPublished, queryUser };
+    return { queriedUser, isPublished, queryUser, userId };
     
   }

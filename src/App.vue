@@ -4,22 +4,16 @@ import Button from 'primevue/button'
 import InputGroup from 'primevue/inputgroup';
 import { InputText, Card } from 'primevue';
 import { usePublishUser, useUnpublishUser } from './composables/bffprofile/publishing';
+import { usePublishing } from './composables/bffprofile/publishing';
 import { useQueryUser } from './composables/dataaccess/query';
-import { useAuth} from './composables/auth/login';
+import { useAuth } from './composables/auth/login';
 
-const email = ref("");
-const pass = ref("");
-const userId = ref("");
-
+// Importing composables and their results and dependencies
 const authenticated = ref(false);
 const accessToken = ref("");
-const publishPressed = ref(false);
-const unpublishPressed = ref(false);
-
-const { queriedUser, isPublished, queryUser } = useQueryUser(userId, authenticated, accessToken);
-const { userData, login } = useAuth(queriedUser, authenticated, email, pass, accessToken, isPublished) 
-const { publicFields, publishUser } = usePublishUser(queriedUser, accessToken, publishPressed);
-const { unpublishUser } = useUnpublishUser(userId, accessToken, unpublishPressed, isPublished);
+const { queriedUser, isPublished, queryUser, userId } = useQueryUser(authenticated, accessToken);
+const { userData, login, email, password } = useAuth(queriedUser,isPublished, authenticated, accessToken); 
+const { publishUser, unpublishUser, publicFields } = usePublishing(queriedUser, accessToken, isPublished);
 </script>
 
 <template>
@@ -62,7 +56,7 @@ const { unpublishUser } = useUnpublishUser(userId, accessToken, unpublishPressed
           </InputGroup>
 
           <InputGroup style="margin-top: 2vh;">
-            <InputText v-model="pass" placeholder="Password" />
+            <InputText v-model="password" placeholder="Password" />
           </InputGroup>
 
           <Button style="margin-top: 2vh;" @click="login" label="Login"/>
